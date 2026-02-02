@@ -3,6 +3,8 @@ import mongoose from 'mongoose';
 import dotenv from 'dotenv';
 dotenv.config();
 import { ExpenseController } from './controllers/expense.controller';
+import { AuthController } from './controllers/auth.controller';
+import { authMiddleware } from './middlewares/auth.middleware';
 
 interface App_Interface {
     startServer(): void;
@@ -49,13 +51,15 @@ export default class App implements App_Interface {
         console.log("Initializing Routes...");
         this.app.use(express.json())
         const expenseController = new ExpenseController();
+        const authController = new AuthController();
 
-        this.app.post('/api/expenses', expenseController.create);
-        this.app.get('/api/expenses', expenseController.getAll);
-        this.app.get('/api/expenses/:id', expenseController.getOne);
-        this.app.patch('/api/expenses/:id', expenseController.update);
-        this.app.delete('/api/expenses/:id', expenseController.delete);
+        this.app.post('/api/auth/register', authController.register);
+        this.app.post('/api/auth/login', authController.login);
+
+        this.app.post('/api/expenses', authMiddleware, expenseController.create);
+        this.app.get('/api/expenses', authMiddleware, expenseController.getAll);
+        this.app.get('/api/expenses/:id', authMiddleware, expenseController.getOne);
+        this.app.patch('/api/expenses/:id', authMiddleware, expenseController.update);
+        this.app.delete('/api/expenses/:id', authMiddleware, expenseController.delete);
     }
 }
-
-
