@@ -12,10 +12,11 @@ I tried to follow OOP principles here, separating the logic into Controllers, Se
     ```
 
 2.  **Environment Setup:**
-    Create a `.env` file in the root and add your MongoDB URL:
+    Create a `.env` file in the root and add your variables:
     ```env
     MONGODB_URL=your_mongodb_connection_string
     PORT=4000
+    JWT_SECRET=your_secret_key
     ```
 
 3.  **Start Server:**
@@ -24,7 +25,21 @@ I tried to follow OOP principles here, separating the logic into Controllers, Se
     ```
     The server runs on `http://localhost:4000`.
 
-## API Endpoints
+## Authentication
+
+-   **Register**: `POST /api/auth/register`
+    ```json
+    {
+      "email": "user@example.com",
+      "password": "password123"
+    }
+    ```
+-   **Login**: `POST /api/auth/login`
+    -   Returns a JWT Token.
+
+## Expense Endpoints (Protected)
+
+> **Note:** All expense endpoints require the `Authorization` header: `Bearer <your_token>`
 
 -   **Get All Expenses**: `GET /api/expenses`
 -   **Add Expense**: `POST /api/expenses`
@@ -44,3 +59,4 @@ I tried to follow OOP principles here, separating the logic into Controllers, Se
 -   `src/controllers`: Handles the request/response logic.
 -   `src/services`: Contains the business logic and database queries.
 -   `src/schema`: Mongoose models.
+-   `src/middlewares`: Authentication middleware.
